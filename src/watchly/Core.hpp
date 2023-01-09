@@ -24,6 +24,7 @@ namespace watchly
 			void start() const;
 			double stop(const std::string& label) const;
 			std::vector<Task> getHistory() const;
+			void cancel() const;
 			
 		private:
 			std::optional<std::chrono::time_point<std::chrono::system_clock>> getCurrentMarker() const;

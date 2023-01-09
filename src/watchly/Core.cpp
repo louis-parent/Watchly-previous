@@ -93,6 +93,18 @@ std::vector<Task> Core::getHistory() const
 	}
 }
 
+void Core::cancel() const
+{
+	try
+	{
+		this->removeWatchlyFile(Core::MARKER_FILE);
+	}
+	catch(const std::exception& e)
+	{
+		throw std::logic_error("Cannot cancel a not running chronometer");
+	}
+}
+
 std::optional<std::chrono::time_point<std::chrono::system_clock>> Core::getCurrentMarker() const
 {
 	std::ifstream markerFile = this->openWatchlyFile<std::ifstream>(Core::MARKER_FILE, std::ios_base::in);
