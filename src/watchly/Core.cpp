@@ -44,6 +44,7 @@ double Core::stop(const std::string& label) const
 
 		this->insertEntry(hours, label);
 		this->stopRunning();
+		this->resetBuffer();
 		
 		return hours;
 	}
