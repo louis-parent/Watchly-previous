@@ -3,6 +3,7 @@ LINKER_OPTIONS=-lpthread
 
 COMPILER=g++
 TARGET=watchly.run
+TARGET_COMMAND_NAME=watchly
 
 OBJECT_EXTENSION=.o
 SOURCE_EXTENSION=.cpp
@@ -31,6 +32,10 @@ $(BIN_DIRECTORY)/%$(OBJECT_EXTENSION): $(SRC_DIRECTORY)/%$(SOURCE_EXTENSION)
 	@echo "Compiling source $< ..."
 	@mkdir -p $(dir $@)
 	@$(COMPILER) -o $@ -c $< $(COMPILER_OPTIONS)
+
+install: all
+	@echo "Installing ${TARGET_COMMAND_NAME} in /usr/local/bin..."
+	@mv $(TARGET) /usr/local/bin/$(TARGET_COMMAND_NAME)
 
 .PHONY: clean mrproper
 
