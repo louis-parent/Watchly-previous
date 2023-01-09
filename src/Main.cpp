@@ -20,17 +20,17 @@ int main(int argc, const char* argv[])
 			const Core core;
 			const std::string command(argv[1]);
 			
-			if(command == "start")
+			if(command == "start" && argc == 2)
 			{
 				core.start();
 				std::cout << "⌚ Chronometer started !" << std::endl;
 			}
-			else if(command == "stop")
+			else if(command == "stop" && argc == 3)
 			{
 				double hours = core.stop(argv[2]);
 				std::cout << "📝 Chronometer stopped and task added to time table with " << hours << "h" << std::endl;
 			}
-			else if(command == "history")
+			else if(command == "history" && argc == 2)
 			{
 				std::cout << std::fixed << std::setprecision(2);
 				
