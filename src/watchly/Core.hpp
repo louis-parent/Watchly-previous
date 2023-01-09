@@ -38,6 +38,10 @@ namespace watchly
 			
 			void buffer(const std::chrono::duration<long, std::chrono::milliseconds::period>& duration) const;
 			void stopRunning() const;
+			void resetBuffer() const;
+			
+			bool isRunning() const;
+			bool hasBufferedTime() const;
 			
 			void insertEntry(double duration, const std::string& label) const;
 			

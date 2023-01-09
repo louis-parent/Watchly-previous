@@ -12,47 +12,40 @@ const std::string Core::BUFFER_FILE = "/buffer.time";
 			
 void Core::start() const
 {
-	std::ofstream markerFile = this->openWatchlyFile<std::ofstream>(Core::MARKER_FILE, std::ios_base::out);
+	bool success = this->write(
+		Core::MARKER_FILE,
+		std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::system_clock::now()).time_since_epoch().count()
+	);
 	
-	if(markerFile)
+	if(!success)
 	{
-		const auto now = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::system_clock::now());
-		
-		markerFile << now.time_since_epoch().count();
-		markerFile.close();
-	}
-	else
-	{
-		throw std::ios_base::failure("Cannot create marker file");
+		throw std::runtime_error("Failed to start chronometer");
 	}
 }
 
 double Core::stop(const std::string& label) const
 {
-	const auto marker = this->getCurrentMarker();
+	const std::optional<std::chrono::duration<long, std::chrono::milliseconds::period>> sinceMarker = this->getTimeSinceMarker();
 	
-	if(marker)
+	if(sinceMarker)
 	{
-		const auto now = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::system_clock::now());
-		const std::optional<std::chrono::duration<long, std::chrono::milliseconds::period>> bufferTime = this->getBufferedTime();
+		std::chrono::duration<long, std::chrono::milliseconds::period> duration = sinceMarker.value();
 		
-		double duration = std::chrono::duration<double, std::chrono::hours::period>((now - marker.value()) + (bufferTime ? bufferTime.value() : std::chrono::duration<long, std::chrono::milliseconds::period>::zero())).count();
+		const std::optional<std::chrono::duration<long, std::chrono::milliseconds::period>> bufferTime = this->getBufferedTime();
+		if(bufferTime)
+		{
+			duration += bufferTime.value();
+		}
+		
+		double hours = std::chrono::duration<double, std::chrono::hours::period>(duration).count();
 		
 		// Floor duration to 5min
-		duration = duration - std::fmod(duration, (5.0 / 60.0));
+		hours = hours - std::fmod(hours, (5.0 / 60.0));
 
-		this->insertEntry(duration, label);
+		this->insertEntry(hours, label);
+		this->stopRunning();
 		
-		try
-		{
-			this->removeWatchlyFile(Core::MARKER_FILE);
-		}
-		catch(const std::exception& e)
-		{
-			throw std::runtime_error(std::string("Task saved but : ") + e.what());
-		}
-		
-		return duration;
+		return hours;
 	}
 	else
 	{
@@ -98,12 +91,20 @@ std::vector<Task> Core::getHistory() const
 
 void Core::cancel() const
 {
-	try
+	bool hasStoppedSomething = false;
+	
+	if(this->isRunning())
 	{
-		this->removeWatchlyFile(Core::MARKER_FILE);
-		this->removeWatchlyFile(Core::BUFFER_FILE);
+		this->stopRunning();
+		hasStoppedSomething = true;
 	}
-	catch(const std::exception& e)
+	
+	if(this->hasBufferedTime())
+	{
+		this->resetBuffer();
+	}
+	
+	if(!hasStoppedSomething)
 	{
 		throw std::logic_error("Cannot cancel a not running or buffered chronometer");
 	}
@@ -195,6 +196,26 @@ void Core::stopRunning() const
 	{
 		throw std::runtime_error("Cannot stop running chronometer");
 	}
+}
+
+void Core::resetBuffer() const
+{
+	bool success = this->removeWatchlyFile(Core::BUFFER_FILE);
+	
+	if(!success)
+	{
+		throw std::runtime_error("Cannot reset running chronometer");
+	}
+}
+
+bool Core::isRunning() const
+{
+	return this->watchlyFileExists(Core::MARKER_FILE);
+}
+
+bool Core::hasBufferedTime() const
+{
+	return this->watchlyFileExists(Core::BUFFER_FILE);
 }
 
 void Core::insertEntry(double duration, const std::string& label) const
