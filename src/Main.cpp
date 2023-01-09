@@ -39,6 +39,11 @@ int main(int argc, const char* argv[])
 					std::cout << "[" << task.date << "] " << task.label << " (" << task.hours << "h)" << std::endl; 
 				}
 			}
+			else if(command == "pause" && argc == 2)
+			{
+				core.pause();
+				std::cout << "⌛ Chronometer paused..." << std::endl;
+			}
 			else if(command == "cancel" && argc == 2)
 			{
 				core.cancel();
