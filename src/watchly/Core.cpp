@@ -6,9 +6,9 @@
 using namespace watchly;
 
 const std::string Core::WATCHLY_DIRECTORY = std::string(std::getenv("HOME")) + "/.watchly";
-const std::string Core::TIME_TABLE_FILE = "/timetable.csv";
-const std::string Core::MARKER_FILE = "/marker.time";
-const std::string Core::BUFFER_FILE = "/buffer.time";
+const std::string Core::TIME_TABLE_FILE = Core::WATCHLY_DIRECTORY + "/timetable.csv";
+const std::string Core::MARKER_FILE = Core::WATCHLY_DIRECTORY + "/marker.time";
+const std::string Core::BUFFER_FILE = Core::WATCHLY_DIRECTORY + "/buffer.time";
 			
 void Core::start() const
 {
@@ -241,14 +241,14 @@ void Core::insertEntry(double duration, const std::string& label) const
 
 bool Core::watchlyFileExists(const std::string& file) const
 {
-	return std::filesystem::exists(Core::WATCHLY_DIRECTORY + file);
+	return std::filesystem::exists(file);
 }
 
 bool Core::removeWatchlyFile(const std::string& file) const
 {	
 	try
 	{
-		return std::filesystem::remove(Core::WATCHLY_DIRECTORY + file);
+		return std::filesystem::remove(file);
 	}
 	catch(const std::exception& e)
 	{
