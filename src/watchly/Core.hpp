@@ -54,7 +54,7 @@ namespace watchly
 				std::filesystem::create_directories(Core::WATCHLY_DIRECTORY);
 				
 				T stream;
-				stream.open(Core::WATCHLY_DIRECTORY + file, mode);
+				stream.open(file, mode);
 				
 				if(stream)
 				{
