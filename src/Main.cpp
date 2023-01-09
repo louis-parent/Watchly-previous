@@ -28,11 +28,11 @@ int main(int argc, const char* argv[])
 			else if(command == "stop")
 			{
 				double hours = core.stop(argv[2]);
-				std::cout << "📝 Chronometer stopped and task added to time table for " << hours << "h" << std::endl;
+				std::cout << "📝 Chronometer stopped and task added to time table with " << hours << "h" << std::endl;
 			}
 			else if(command == "history")
 			{
-				std::cout << std::setprecision(2);
+				std::cout << std::fixed << std::setprecision(2);
 				
 				for(Task task : core.getHistory())
 				{
