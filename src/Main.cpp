@@ -28,26 +28,26 @@ int main(int argc, const char* argv[])
 			else if(command == "stop" && argc == 3)
 			{
 				double hours = core.stop(argv[2]);
-				std::cout << "📝 Chronometer stopped and task added to time table with " << hours << "h" << std::endl;
+				std::cout << "💾 Chronometer stopped and task added to time table with " << std::fixed << std::showpoint << std::setprecision(2) << hours << "h" << std::endl;
 			}
 			else if(command == "history" && argc == 2)
 			{
-				std::cout << std::fixed << std::setprecision(2);
+				std::cout << "📑 List of tasks saved : " << std::endl;
 				
 				for(Task task : core.getHistory())
 				{
-					std::cout << "[" << task.date << "] " << task.label << " (" << task.hours << "h)" << std::endl; 
+					std::cout << "[" << task.date << "] " << task.label << " (" << std::fixed << std::showpoint << std::setprecision(2) << std::stod(task.hours) << "h)" << std::endl; 
 				}
 			}
 			else if(command == "pause" && argc == 2)
 			{
 				core.pause();
-				std::cout << "⌛ Chronometer paused..." << std::endl;
+				std::cout << "⏸ Chronometer paused..." << std::endl;
 			}
 			else if(command == "cancel" && argc == 2)
 			{
 				core.cancel();
-				std::cout << "🛑 Chronometer canceled..." << std::endl;
+				std::cout << "⏹ Chronometer canceled !" << std::endl;
 			}
 			else if(command == "status" && argc == 2)
 			{
