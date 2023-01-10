@@ -25,16 +25,23 @@ void Core::start() const
 
 double Core::stop(const std::string& label) const
 {
+	const std::optional<std::chrono::duration<long, std::chrono::milliseconds::period>> bufferTime = this->getBufferedTime();
 	const std::optional<std::chrono::duration<long, std::chrono::milliseconds::period>> sinceMarker = this->getTimeSinceMarker();
 	
-	if(sinceMarker)
+	if(sinceMarker || bufferTime)
 	{
-		std::chrono::duration<long, std::chrono::milliseconds::period> duration = sinceMarker.value();
+		std::chrono::duration<long, std::chrono::milliseconds::period> duration = std::chrono::duration<long, std::chrono::milliseconds::period>::zero();
 		
-		const std::optional<std::chrono::duration<long, std::chrono::milliseconds::period>> bufferTime = this->getBufferedTime();
 		if(bufferTime)
 		{
 			duration += bufferTime.value();
+			this->resetBuffer();
+		}
+		
+		if(sinceMarker)
+		{
+			duration += sinceMarker.value();
+			this->stopRunning();
 		}
 		
 		double hours = std::chrono::duration<double, std::chrono::hours::period>(duration).count();
@@ -43,14 +50,12 @@ double Core::stop(const std::string& label) const
 		hours = hours - std::fmod(hours, (5.0 / 60.0));
 
 		this->insertEntry(hours, label);
-		this->stopRunning();
-		this->resetBuffer();
 		
 		return hours;
 	}
 	else
 	{
-		throw std::logic_error("Cannot stop a not running chronometer");
+		throw std::logic_error("Cannot stop a not running or buffered chronometer");
 	}
 }
 
