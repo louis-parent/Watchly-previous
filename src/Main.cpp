@@ -49,6 +49,28 @@ int main(int argc, const char* argv[])
 				core.cancel();
 				std::cout << "🛑 Chronometer canceled..." << std::endl;
 			}
+			else if(command == "status" && argc == 2)
+			{
+				const std::optional<std::chrono::duration<long, std::chrono::milliseconds::period>> sinceMarker = core.getTimeSinceMarker();	
+				if(sinceMarker)
+				{
+					std::cout << "⏳ Chronometer started since " << std::chrono::duration<double, std::chrono::hours::period>(sinceMarker.value()).count() << "h !" << std::endl;
+				}
+				else
+				{
+					std::cout << "⌛ No chronometer are currently running" << std::endl;
+				}
+
+				const std::optional<std::chrono::duration<long, std::chrono::milliseconds::period>> bufferTime = core.getBufferedTime();
+				if(bufferTime)
+				{
+					std::cout << "📬 Paused chronometer contains " << std::chrono::duration<double, std::chrono::hours::period>(bufferTime.value()).count() << "h to be validated..." << std::endl;
+				}
+				else
+				{
+					std::cout << "📭 Paused chronometer is currently empty" << std::endl;
+				}
+			}
 			else
 			{
 				usage(argv[0]);

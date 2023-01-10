@@ -28,20 +28,21 @@ namespace watchly
 			void cancel() const;
 			void pause() const;
 			
-		private:
+			bool isRunning() const;
+			bool hasBufferedTime() const;
+			
+			std::optional<std::chrono::duration<long, std::chrono::milliseconds::period>> getBufferedTime() const;
+			std::optional<std::chrono::duration<long, std::chrono::milliseconds::period>> getTimeSinceMarker() const;
+
+		private:		
 			/**
 			 * Data Operations
 			 */			
-			std::optional<std::chrono::duration<long, std::chrono::milliseconds::period>> getBufferedTime() const;
-			std::optional<std::chrono::duration<long, std::chrono::milliseconds::period>> getTimeSinceMarker() const;
 			std::optional<std::chrono::time_point<std::chrono::system_clock>> getCurrentMarker() const;
 			
 			void buffer(const std::chrono::duration<long, std::chrono::milliseconds::period>& duration) const;
 			void stopRunning() const;
 			void resetBuffer() const;
-			
-			bool isRunning() const;
-			bool hasBufferedTime() const;
 			
 			void insertEntry(double duration, const std::string& label) const;
 			
