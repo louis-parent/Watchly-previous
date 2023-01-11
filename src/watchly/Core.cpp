@@ -12,14 +12,21 @@ const std::string Core::BUFFER_FILE = Core::WATCHLY_DIRECTORY + "/buffer.time";
 			
 void Core::start() const
 {
-	bool success = this->write(
-		Core::MARKER_FILE,
-		std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::system_clock::now()).time_since_epoch().count()
-	);
-	
-	if(!success)
+	if(!this->isRunning())
 	{
-		throw std::runtime_error("Failed to start chronometer");
+		bool success = this->write(
+			Core::MARKER_FILE,
+			std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::system_clock::now()).time_since_epoch().count()
+		);
+		
+		if(!success)
+		{
+			throw std::runtime_error("Failed to start chronometer");
+		}
+	}
+	else
+	{
+		throw std::logic_error("Cannot start a chronometer, one is already running");
 	}
 }
 
