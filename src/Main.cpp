@@ -5,12 +5,6 @@
 
 using namespace watchly;
 
-void usage(const std::string& name)
-{
-	std::cerr << "❓ Usage : " << name << " [command] [option]" << std::endl;
-	std::cerr << "Command can be : start, stop" << std::endl;
-}
-
 int main(int argc, const char* argv[])
 {
 	try
@@ -71,14 +65,27 @@ int main(int argc, const char* argv[])
 					std::cout << "📭 Paused chronometer is currently empty" << std::endl;
 				}
 			}
+			else if(command == "help" && argc == 2)
+			{
+				std::cout << "❓ Usage : " << argv[0] << " [command] [option]..." << std::endl;
+				std::cout << "Available commands :" << std::endl;
+				std::cout << "  help   \tDisplay the current documentation." << std::endl;
+				std::cout << "  start  \tStart the chronometer." << std::endl;
+				std::cout << "  stop   \tStop the running chronometer and save the task. An option is required for the task name." << std::endl;
+				std::cout << "  pause  \tPause the running chronometer and buffer it." << std::endl;
+				std::cout << "  cancel \tCancel running and paused chronometers." << std::endl;
+				std::cout << "  history\tDisplay a list of the saved tasks." << std::endl;
+				std::cout << "  status \tDisplay the current status of the running and paused chronometers." << std::endl;
+				
+			}
 			else
 			{
-				usage(argv[0]);
+				throw std::runtime_error(std::string("Invalid command, run `") + argv[0] + " help` to learn more");
 			}
 		}
 		else
 		{
-			usage(argv[0]);
+			throw std::runtime_error(std::string("A command is required, run `") + argv[0] + " help` to learn more");
 		}
 
 		return 0;
