@@ -56,7 +56,7 @@ double Core::stop(const std::string& label) const
 		// Floor duration to 5min
 		hours = hours - std::fmod(hours, (5.0 / 60.0));
 
-		this->insertEntry(hours, label);
+		this->putTask(hours, label);
 		
 		return hours;
 	}
@@ -145,6 +145,24 @@ void Core::pause() const
 	}
 }
 
+
+void Core::putTask(double duration, const std::string& label) const
+{
+	std::ofstream timeTable = this->openWatchlyFile<std::ofstream>(Core::TIME_TABLE_FILE, std::ios_base::out | std::ios_base::app);
+	
+	if(timeTable)
+	{
+		auto time = std::time(nullptr);
+		auto local = *std::localtime(&time);
+		
+		timeTable << std::put_time(&local, "%d/%m/%Y") << ";"<< duration << ";" << label << std::endl;	
+	}
+	else
+	{
+		throw std::ios_base::failure("Cannot write into time table file");
+	}
+}
+
 /**
  * Data Operations
  */
@@ -229,23 +247,6 @@ bool Core::isRunning() const
 bool Core::hasBufferedTime() const
 {
 	return this->watchlyFileExists(Core::BUFFER_FILE);
-}
-
-void Core::insertEntry(double duration, const std::string& label) const
-{
-	std::ofstream timeTable = this->openWatchlyFile<std::ofstream>(Core::TIME_TABLE_FILE, std::ios_base::out | std::ios_base::app);
-	
-	if(timeTable)
-	{
-		auto time = std::time(nullptr);
-		auto local = *std::localtime(&time);
-		
-		timeTable << std::put_time(&local, "%d/%m/%Y") << ";"<< duration << ";" << label << std::endl;	
-	}
-	else
-	{
-		throw std::ios_base::failure("Cannot write into time table file");
-	}
 }
 
 /**

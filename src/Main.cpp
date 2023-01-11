@@ -76,7 +76,17 @@ int main(int argc, const char* argv[])
 				std::cout << "  cancel \tCancel running and paused chronometers." << std::endl;
 				std::cout << "  history\tDisplay a list of the saved tasks." << std::endl;
 				std::cout << "  status \tDisplay the current status of the running and paused chronometers." << std::endl;
+				std::cout << "  put    \tDirectly add a task into the time table. Two options are required, one for the hours and a second for the label." << std::endl;
 				
+			}
+			else if(command == "put" && argc == 4)
+			{
+				double hours = std::stod(argv[2]);
+				const char* label = argv[3];
+				
+				core.putTask(hours, label);
+				
+				std::cout << "💾 The task '" << label << "' with " << std::fixed << std::showpoint << std::setprecision(2) << hours << "h was added to time table." << std::endl;
 			}
 			else
 			{

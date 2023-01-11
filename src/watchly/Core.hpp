@@ -27,6 +27,7 @@ namespace watchly
 			std::vector<Task> getHistory() const;
 			void cancel() const;
 			void pause() const;
+			void putTask(double duration, const std::string& label) const;
 			
 			bool isRunning() const;
 			bool hasBufferedTime() const;
@@ -43,8 +44,6 @@ namespace watchly
 			void buffer(const std::chrono::duration<long, std::chrono::milliseconds::period>& duration) const;
 			void stopRunning() const;
 			void resetBuffer() const;
-			
-			void insertEntry(double duration, const std::string& label) const;
 			
 			/**
 			 * File Operations
