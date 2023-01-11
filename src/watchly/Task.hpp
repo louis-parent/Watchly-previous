@@ -8,7 +8,7 @@ namespace watchly
 	struct Task
 	{
 		std::string date = "";
-		std::string hours = "";
+		double hours = 0.0;
 		std::string label = "";
 	};
 }

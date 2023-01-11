@@ -30,7 +30,7 @@ int main(int argc, const char* argv[])
 				
 				for(Task task : core.getHistory())
 				{
-					std::cout << "[" << task.date << "] " << task.label << " (" << std::fixed << std::showpoint << std::setprecision(2) << std::stod(task.hours) << "h)" << std::endl; 
+					std::cout << "[" << task.date << "] " << task.label << " (" << std::fixed << std::showpoint << std::setprecision(2) << task.hours << "h)" << std::endl; 
 				}
 			}
 			else if(command == "pause" && argc == 2)

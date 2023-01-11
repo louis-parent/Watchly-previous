@@ -86,7 +86,7 @@ std::vector<Task> Core::getHistory() const
 			task.date = value;
 
 			std::getline(row, value, ';');
-			task.hours = value;
+			task.hours = std::stod(value);
 			
 			std::getline(row, value, ';');
 			task.label = value;
