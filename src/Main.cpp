@@ -18,6 +18,12 @@ int main(int argc, const char* argv[])
 			{
 				core.start();
 				std::cout << "⌚ Chronometer started !" << std::endl;
+				
+				const std::optional<std::chrono::duration<long, std::chrono::milliseconds::period>> bufferTime = core.getBufferedTime();
+				if(bufferTime)
+				{
+					std::cout << "📬 Paused chronometer already contains " << std::chrono::duration<double, std::chrono::hours::period>(bufferTime.value()).count() << "h." << std::endl;
+				}
 			}
 			else if(command == "stop" && argc == 3)
 			{
