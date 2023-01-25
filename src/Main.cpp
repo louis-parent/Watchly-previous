@@ -35,8 +35,8 @@ int main(int argc, const char* argv[])
 			}
 			else if(command == "pause" && argc == 2)
 			{
-				core.pause();
-				std::cout << "⏸ Chronometer paused..." << std::endl;
+				std::chrono::duration<double, std::chrono::hours::period> pause = core.pause();
+				std::cout << "⏸ Chronometer paused with " << std::fixed << std::showpoint << std::setprecision(2) << pause.count() << "h..." << std::endl;
 			}
 			else if(command == "cancel" && argc == 2)
 			{

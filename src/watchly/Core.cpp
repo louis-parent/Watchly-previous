@@ -123,7 +123,7 @@ void Core::cancel() const
 	}
 }
 
-void Core::pause() const
+std::chrono::duration<long, std::chrono::milliseconds::period> Core::pause() const
 {
 	std::optional<std::chrono::duration<long, std::chrono::milliseconds::period>> runningTime = this->getTimeSinceMarker();
 	if(runningTime)
@@ -138,6 +138,8 @@ void Core::pause() const
 		
 		this->buffer(duration);
 		this->stopRunning();
+		
+		return duration;
 	}
 	else
 	{

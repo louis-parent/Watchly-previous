@@ -26,7 +26,7 @@ namespace watchly
 			double stop(const std::string& label) const;
 			std::vector<Task> getHistory() const;
 			void cancel() const;
-			void pause() const;
+			std::chrono::duration<long, std::chrono::milliseconds::period> pause() const;
 			void putTask(double duration, const std::string& label) const;
 			
 			bool isRunning() const;
