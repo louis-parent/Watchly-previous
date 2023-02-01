@@ -22,7 +22,7 @@ int main(int argc, const char* argv[])
 				const std::optional<std::chrono::duration<long, std::chrono::milliseconds::period>> bufferTime = core.getBufferedTime();
 				if(bufferTime)
 				{
-					std::cout << "📬 Paused chronometer already contains " << std::chrono::duration<double, std::chrono::hours::period>(bufferTime.value()).count() << "h." << std::endl;
+					std::cout << "📬 Paused chronometer already contains " << std::fixed << std::showpoint << std::setprecision(2) << std::chrono::duration<double, std::chrono::hours::period>(bufferTime.value()).count() << "h." << std::endl;
 				}
 			}
 			else if(command == "stop" && argc == 3)
