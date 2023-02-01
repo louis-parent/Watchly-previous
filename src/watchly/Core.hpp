@@ -7,6 +7,7 @@
 #include <vector>
 #include <fstream>
 #include <filesystem>
+#include <map>
 #include "Task.hpp"
 
 namespace watchly
@@ -18,6 +19,8 @@ namespace watchly
 			static const std::string TIME_TABLE_FILE;
 			static const std::string MARKER_FILE;
 			static const std::string BUFFER_FILE;
+			static const std::string TEMPLATE_FILE;
+			static const std::string PROPERTIES_FILE;
 			
 		public:
 			Core() = default;
@@ -28,6 +31,7 @@ namespace watchly
 			void cancel() const;
 			std::chrono::duration<long, std::chrono::milliseconds::period> pause() const;
 			void putTask(double duration, const std::string& label) const;
+			double generate(const std::string& path, const std::chrono::system_clock::time_point& from, const std::chrono::system_clock::time_point& to = std::chrono::system_clock::now()) const;
 			
 			bool isRunning() const;
 			bool hasBufferedTime() const;
@@ -44,6 +48,8 @@ namespace watchly
 			void buffer(const std::chrono::duration<long, std::chrono::milliseconds::period>& duration) const;
 			void stopRunning() const;
 			void resetBuffer() const;
+			
+			std::map<std::string, std::string> getProperties() const;
 			
 			/**
 			 * File Operations

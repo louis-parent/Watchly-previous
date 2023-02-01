@@ -2,6 +2,9 @@
 
 #include <exception>
 #include <cmath>
+#include <ranges>
+#include "utils/TimeUtils.hpp"
+#include "templating/LatexTemplate.hpp"
 
 using namespace watchly;
 
@@ -9,7 +12,9 @@ const std::string Core::WATCHLY_DIRECTORY = std::string(std::getenv("HOME")) + "
 const std::string Core::TIME_TABLE_FILE = Core::WATCHLY_DIRECTORY + "/timetable.csv";
 const std::string Core::MARKER_FILE = Core::WATCHLY_DIRECTORY + "/marker.time";
 const std::string Core::BUFFER_FILE = Core::WATCHLY_DIRECTORY + "/buffer.time";
-			
+const std::string Core::TEMPLATE_FILE = Core::WATCHLY_DIRECTORY + "/template.tex";
+const std::string Core::PROPERTIES_FILE = Core::WATCHLY_DIRECTORY + "/global.properties";
+
 void Core::start() const
 {
 	if(!this->isRunning())
@@ -83,7 +88,7 @@ std::vector<Task> Core::getHistory() const
 			std::string value;
 			
 			std::getline(row, value, ';');
-			task.date = value;
+			task.date = utils::TimeUtils::parse(value);
 
 			std::getline(row, value, ';');
 			task.hours = std::stod(value);
@@ -157,12 +162,27 @@ void Core::putTask(double duration, const std::string& label) const
 		auto time = std::time(nullptr);
 		auto local = *std::localtime(&time);
 		
-		timeTable << std::put_time(&local, "%d/%m/%Y") << ";"<< duration << ";" << label << std::endl;	
+		timeTable << std::put_time(&local, "%d/%m/%Y") << ";" << std::fixed << std::showpoint << std::setprecision(2) << duration << ";" << label << std::endl;	
 	}
 	else
 	{
 		throw std::ios_base::failure("Cannot write into time table file");
 	}
+}
+
+double Core::generate(const std::string& path, const std::chrono::system_clock::time_point& from, const std::chrono::system_clock::time_point& to) const
+{
+	std::vector<Task> tasks = this->getHistory();	
+	tasks.erase(
+		std::remove_if(tasks.begin(), tasks.end(), [from, to](const Task& task) {
+			return task.date < from || task.date > to;
+		}),
+		tasks.end()
+	);
+	
+	std::ifstream tstream = this->openWatchlyFile<std::ifstream>(Core::TEMPLATE_FILE, std::ios_base::in);
+	
+	return templating::LatexTemplate::generatePDF(tstream, path, tasks, this->getProperties());
 }
 
 /**
@@ -180,6 +200,30 @@ std::optional<std::chrono::duration<long, std::chrono::milliseconds::period>> Co
 	{
 		return std::nullopt;
 	}
+}
+
+std::map<std::string, std::string> Core::getProperties() const
+{
+	std::ifstream stream = this->openWatchlyFile<std::ifstream>(Core::PROPERTIES_FILE, std::ios_base::in);
+	std::map<std::string, std::string> properties{};
+	
+	if(stream)
+	{		
+		std::string line;
+		while(std::getline(stream, line))
+		{
+			std::stringstream keyValue(line);
+			std::string key;
+			std::string value;
+			
+			std::getline(keyValue, key, '=');
+			std::getline(keyValue, value, '=');
+			
+			properties[key] = value;
+		}
+	}
+	
+	return properties;
 }
 
 std::optional<std::chrono::duration<long, std::chrono::milliseconds::period>> Core::getTimeSinceMarker() const

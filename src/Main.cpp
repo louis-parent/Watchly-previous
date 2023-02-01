@@ -1,12 +1,16 @@
+#include <locale>
 #include <iostream>
 #include <iomanip>
 #include <string>
 #include "watchly/Core.hpp"
+#include "watchly/utils/TimeUtils.hpp"
 
 using namespace watchly;
 
 int main(int argc, const char* argv[])
 {
+	std::locale::global(std::locale(""));
+	
 	try
 	{
 		if(argc >= 2)
@@ -36,7 +40,7 @@ int main(int argc, const char* argv[])
 				
 				for(Task task : core.getHistory())
 				{
-					std::cout << "[" << task.date << "] " << task.label << " (" << std::fixed << std::showpoint << std::setprecision(2) << task.hours << "h)" << std::endl; 
+					std::cout << "[" << utils::TimeUtils::format(task.date) << "] " << task.label << " (" << std::fixed << std::showpoint << std::setprecision(2) << task.hours << "h)" << std::endl; 
 				}
 			}
 			else if(command == "pause" && argc == 2)
@@ -70,6 +74,21 @@ int main(int argc, const char* argv[])
 				{
 					std::cout << "📭 Paused chronometer is currently empty" << std::endl;
 				}
+			}
+			else if(command == "export" && (argc == 4 || argc == 5))
+			{				
+				double totalAmount = 0;
+				
+				if(argc == 5)
+				{
+					totalAmount = core.generate(argv[2], utils::TimeUtils::parse(argv[3]), utils::TimeUtils::parse(argv[4]));
+				}
+				else
+				{
+					totalAmount = core.generate(argv[2], utils::TimeUtils::parse(argv[3]));
+				}
+				
+				std::cout << "🧾 Invoice generated at '" << argv[2] << "' for a total of " << std::fixed << std::showpoint << std::setprecision(2) << totalAmount << "€" << std::endl;
 			}
 			else if(command == "help" && argc == 2)
 			{
