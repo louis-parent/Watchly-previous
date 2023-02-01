@@ -8,7 +8,7 @@
 #include <fstream>
 #include <filesystem>
 #include <map>
-#include "Task.hpp"
+#include "model/Task.hpp"
 
 namespace watchly
 {
@@ -27,7 +27,7 @@ namespace watchly
 			
 			void start() const;
 			double stop(const std::string& label) const;
-			std::vector<Task> getHistory() const;
+			std::vector<watchly::model::Task> getHistory() const;
 			void cancel() const;
 			std::chrono::duration<long, std::chrono::milliseconds::period> pause() const;
 			void putTask(double duration, const std::string& label) const;

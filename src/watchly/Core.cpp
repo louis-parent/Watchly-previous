@@ -4,7 +4,7 @@
 #include <cmath>
 #include <ranges>
 #include "utils/TimeUtils.hpp"
-#include "templating/LatexTemplate.hpp"
+#include "templating/Latex.hpp"
 
 using namespace watchly;
 
@@ -71,24 +71,24 @@ double Core::stop(const std::string& label) const
 	}
 }
 
-std::vector<Task> Core::getHistory() const
+std::vector<watchly::model::Task> Core::getHistory() const
 {
 	std::ifstream timeTable = this->openWatchlyFile<std::ifstream>(Core::TIME_TABLE_FILE, std::ios_base::in);
 	
 	if(timeTable)
 	{
-		std::vector<Task> tasks;
+		std::vector<watchly::model::Task> tasks;
 		
 		std::string line;
 		while(std::getline(timeTable, line))
 		{
-			Task task;
+			watchly::model::Task task;
 
 			std::stringstream row(line);
 			std::string value;
 			
 			std::getline(row, value, ';');
-			task.date = utils::TimeUtils::parse(value);
+			task.date = utils::time::parse(value);
 
 			std::getline(row, value, ';');
 			task.hours = std::stod(value);
@@ -172,9 +172,9 @@ void Core::putTask(double duration, const std::string& label) const
 
 double Core::generate(const std::string& path, const std::chrono::system_clock::time_point& from, const std::chrono::system_clock::time_point& to) const
 {
-	std::vector<Task> tasks = this->getHistory();	
+	std::vector<watchly::model::Task> tasks = this->getHistory();	
 	tasks.erase(
-		std::remove_if(tasks.begin(), tasks.end(), [from, to](const Task& task) {
+		std::remove_if(tasks.begin(), tasks.end(), [from, to](const watchly::model::Task& task) {
 			return task.date < from || task.date > to;
 		}),
 		tasks.end()
@@ -182,7 +182,7 @@ double Core::generate(const std::string& path, const std::chrono::system_clock::
 	
 	std::ifstream tstream = this->openWatchlyFile<std::ifstream>(Core::TEMPLATE_FILE, std::ios_base::in);
 	
-	return templating::LatexTemplate::generatePDF(tstream, path, tasks, this->getProperties());
+	return templating::Latex::generatePDF(tstream, path, tasks, this->getProperties());
 }
 
 /**

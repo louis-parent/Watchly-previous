@@ -6,29 +6,25 @@
 #include <sstream>
 #include <iomanip>
 
-namespace watchly::utils
+namespace watchly::utils::time
 {
-	class TimeUtils
+	inline std::string format(const std::chrono::system_clock::time_point& point)
 	{
-		public:
-			static std::string format(const std::chrono::system_clock::time_point& point)
-			{
-				std::time_t timet = std::chrono::system_clock::to_time_t(point);
-				std::tm time = *std::localtime(&timet);
+		std::time_t timet = std::chrono::system_clock::to_time_t(point);
+		std::tm time = *std::localtime(&timet);
 
-				std::stringstream stream;
-				stream << std::put_time(&time, "%d/%m/%Y");
+		std::stringstream stream;
+		stream << std::put_time(&time, "%d/%m/%Y");
 
-				return stream.str();
-			}
-			
-			static std::chrono::system_clock::time_point parse(const std::string& string)
-			{
-				std::tm time{};
-				std::stringstream(string) >> std::get_time(&time, "%d/%m/%Y");
-				return std::chrono::system_clock::from_time_t(std::mktime(&time));	
-			}
-	};
+		return stream.str();
+	}
+	
+	inline std::chrono::system_clock::time_point parse(const std::string& string)
+	{
+		std::tm time{};
+		std::stringstream(string) >> std::get_time(&time, "%d/%m/%Y");
+		return std::chrono::system_clock::from_time_t(std::mktime(&time));	
+	}
 }
 
 #endif

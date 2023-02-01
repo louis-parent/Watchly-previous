@@ -38,9 +38,9 @@ int main(int argc, const char* argv[])
 			{
 				std::cout << "📑 List of tasks saved : " << std::endl;
 				
-				for(Task task : core.getHistory())
+				for(model::Task task : core.getHistory())
 				{
-					std::cout << "[" << utils::TimeUtils::format(task.date) << "] " << task.label << " (" << std::fixed << std::showpoint << std::setprecision(2) << task.hours << "h)" << std::endl; 
+					std::cout << "[" << utils::time::format(task.date) << "] " << task.label << " (" << std::fixed << std::showpoint << std::setprecision(2) << task.hours << "h)" << std::endl; 
 				}
 			}
 			else if(command == "pause" && argc == 2)
@@ -81,11 +81,11 @@ int main(int argc, const char* argv[])
 				
 				if(argc == 5)
 				{
-					totalAmount = core.generate(argv[2], utils::TimeUtils::parse(argv[3]), utils::TimeUtils::parse(argv[4]));
+					totalAmount = core.generate(argv[2], utils::time::parse(argv[3]), utils::time::parse(argv[4]));
 				}
 				else
 				{
-					totalAmount = core.generate(argv[2], utils::TimeUtils::parse(argv[3]));
+					totalAmount = core.generate(argv[2], utils::time::parse(argv[3]));
 				}
 				
 				std::cout << "🧾 Invoice generated at '" << argv[2] << "' for a total of " << std::fixed << std::showpoint << std::setprecision(2) << totalAmount << "€" << std::endl;

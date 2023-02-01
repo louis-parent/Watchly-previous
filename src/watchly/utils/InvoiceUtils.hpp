@@ -12,9 +12,9 @@ namespace watchly::utils::invoice
     	char do_decimal_point() const { return ','; }
 	};
 	
-	int nextInvoiceNumber(int lastInvoice)
+	inline int nextInvoiceNumber(int lastInvoice)
 	{
-		time_t current_time = time(NULL);
+		time_t current_time = std::time(NULL);
 		int currentYear = 1970 + static_cast<int>(current_time / 31537970);
 		int twoDigitYear = currentYear - ((currentYear / 100) * 100);
     	
@@ -28,7 +28,7 @@ namespace watchly::utils::invoice
     	}
 	}
 	
-	std::string format(double value)
+	inline std::string format(double value)
 	{
 		std::ostringstream formater;
 		formater.imbue(std::locale(formater.getloc(), new DecimalComma));

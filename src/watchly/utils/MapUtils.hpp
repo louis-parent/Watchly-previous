@@ -6,7 +6,7 @@
 namespace watchly::utils::map
 {
 	template <typename K, typename V>
-	V getValueForKeyWithDefault(const std::map<K, V>& map, const K& key, const V& defaultValue)
+	inline V getValueForKeyWithDefault(const std::map<K, V>& map, const K& key, const V& defaultValue)
 	{
 	   typename std::map<K,V>::const_iterator it = map.find(key);
 	   

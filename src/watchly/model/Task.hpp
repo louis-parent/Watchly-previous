@@ -4,7 +4,7 @@
 #include <string>
 #include <chrono>
 
-namespace watchly
+namespace watchly::model
 {
 	struct Task
 	{
