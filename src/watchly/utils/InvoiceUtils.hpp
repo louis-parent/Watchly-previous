@@ -14,18 +14,20 @@ namespace watchly::utils::invoice
 	
 	inline int nextInvoiceNumber(int lastInvoice)
 	{
+		int maxInvoicePerYearCount = 10000;
+		
 		time_t current_time = std::time(NULL);
 		int currentYear = 1970 + static_cast<int>(current_time / 31537970);
 		int twoDigitYear = currentYear - ((currentYear / 100) * 100);
+		
+    	int previousNumber = (twoDigitYear * maxInvoicePerYearCount);
     	
-    	if((lastInvoice / 1000) == twoDigitYear)
+    	if((lastInvoice / maxInvoicePerYearCount) == twoDigitYear)
     	{
-    		return lastInvoice + 1;
+    		previousNumber = lastInvoice;
     	}
-    	else
-    	{
-    		return (twoDigitYear * 1000) + 1;
-    	}
+    	
+		return previousNumber + 1;
 	}
 	
 	inline std::string format(double value)
