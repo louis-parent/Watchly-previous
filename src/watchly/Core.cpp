@@ -120,6 +120,7 @@ void Core::cancel() const
 	if(this->hasBufferedTime())
 	{
 		this->resetBuffer();
+		hasStoppedSomething = true;
 	}
 	
 	if(!hasStoppedSomething)
