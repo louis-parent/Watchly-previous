@@ -4,6 +4,7 @@
 #include <string>
 #include <ctime>
 #include <sstream>
+#include <iostream>
 
 namespace watchly::utils::invoice
 {
@@ -21,12 +22,12 @@ namespace watchly::utils::invoice
 		int twoDigitYear = currentYear - ((currentYear / 100) * 100);
 		
     	int previousNumber = (twoDigitYear * maxInvoicePerYearCount);
-    	
-    	if((lastInvoice / maxInvoicePerYearCount) == twoDigitYear)
+
+    	if((lastInvoice / (maxInvoicePerYearCount / 10)) == twoDigitYear)
     	{
     		previousNumber = lastInvoice;
     	}
-    	
+
 		return previousNumber + 1;
 	}
 	

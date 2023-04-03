@@ -4,7 +4,9 @@
 #include <cmath>
 #include <ranges>
 #include "utils/TimeUtils.hpp"
+#include "utils/InvoiceUtils.hpp"
 #include "templating/Latex.hpp"
+#include "utils/MapUtils.hpp"
 
 using namespace watchly;
 
@@ -182,8 +184,14 @@ double Core::generate(const std::string& path, const std::chrono::system_clock::
 	);
 	
 	std::ifstream tstream = this->openWatchlyFile<std::ifstream>(Core::TEMPLATE_FILE, std::ios_base::in);
+	std::map<std::string, std::string> properties = this->getProperties();
+
+	double amount = templating::Latex::generatePDF(tstream, path, tasks, properties);
 	
-	return templating::Latex::generatePDF(tstream, path, tasks, this->getProperties());
+	properties["lastinvoice"] = std::to_string(watchly::utils::invoice::nextInvoiceNumber(std::stoi(watchly::utils::map::getValueForKeyWithDefault<std::string, std::string>(properties, "lastinvoice", "0"))));
+	this->updateProperties(properties); 
+	
+	return amount;
 }
 
 /**
@@ -225,6 +233,28 @@ std::map<std::string, std::string> Core::getProperties() const
 	}
 	
 	return properties;
+}
+
+bool Core::updateProperties(const std::map<std::string, std::string>& properties) const
+{
+	std::ofstream stream = this->openWatchlyFile<std::ofstream>(Core::PROPERTIES_FILE, std::ios_base::out);
+	
+	if(stream)
+	{		
+		for(std::map<std::string, std::string>::const_iterator it = properties.begin(); it != properties.end(); it++)
+		{
+			if(!it->first.empty())
+			{
+				stream << it->first << "=" << it->second << std::endl;
+			}
+		}
+		
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 std::optional<std::chrono::duration<long, std::chrono::milliseconds::period>> Core::getTimeSinceMarker() const

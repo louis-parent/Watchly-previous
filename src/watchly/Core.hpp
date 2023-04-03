@@ -50,6 +50,7 @@ namespace watchly
 			void resetBuffer() const;
 			
 			std::map<std::string, std::string> getProperties() const;
+			bool updateProperties(const std::map<std::string, std::string>& properties) const;
 			
 			/**
 			 * File Operations
