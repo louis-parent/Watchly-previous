@@ -156,13 +156,13 @@ std::chrono::duration<long, std::chrono::milliseconds::period> Core::pause() con
 }
 
 
-void Core::putTask(double duration, const std::string& label) const
+void Core::putTask(double duration, const std::string& label, const std::chrono::system_clock::time_point& date) const
 {
 	std::ofstream timeTable = this->openWatchlyFile<std::ofstream>(Core::TIME_TABLE_FILE, std::ios_base::out | std::ios_base::app);
 	
 	if(timeTable)
 	{
-		auto time = std::time(nullptr);
+		auto time = std::chrono::system_clock::to_time_t(date);
 		auto local = *std::localtime(&time);
 		
 		timeTable << std::put_time(&local, "%d/%m/%Y") << ";" << std::fixed << std::showpoint << std::setprecision(2) << duration << ";" << label << std::endl;	

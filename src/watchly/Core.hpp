@@ -30,7 +30,7 @@ namespace watchly
 			std::vector<watchly::model::Task> getHistory() const;
 			void cancel() const;
 			std::chrono::duration<long, std::chrono::milliseconds::period> pause() const;
-			void putTask(double duration, const std::string& label) const;
+			void putTask(double duration, const std::string& label, const std::chrono::system_clock::time_point& date = std::chrono::system_clock::now()) const;
 			double generate(const std::string& path, const std::chrono::system_clock::time_point& from, const std::chrono::system_clock::time_point& to = std::chrono::system_clock::now()) const;
 			
 			bool isRunning() const;

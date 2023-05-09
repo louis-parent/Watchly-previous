@@ -94,22 +94,29 @@ int main(int argc, const char* argv[])
 			{
 				std::cout << "❓ Usage : " << argv[0] << " [command] [option]..." << std::endl;
 				std::cout << "Available commands :" << std::endl;
-				std::cout << "  help                     \tDisplay the current documentation." << std::endl;
-				std::cout << "  start                    \tStart the chronometer." << std::endl;
-				std::cout << "  stop [label]             \tStop the running chronometer and save the task. An option is required for the task name." << std::endl;
-				std::cout << "  pause                    \tPause the running chronometer and buffer it." << std::endl;
-				std::cout << "  cancel                   \tCancel running and paused chronometers." << std::endl;
-				std::cout << "  history                  \tDisplay a list of the saved tasks." << std::endl;
-				std::cout << "  status                   \tDisplay the current status of the running and paused chronometers." << std::endl;
-				std::cout << "  put [hours] [label]      \tDirectly add a task into the time table. Two options are required, one for the hours and a second for the label." << std::endl;
-				std::cout << "  export [file] [from] {to}\tExport an invoice as PDF with tasks into a time interval. Two options are required, the first for the destination file and the second for the start date of the time interval. The last option is optional and indicate the end date of the time interval, by default it's today.'" << std::endl;
+				std::cout << "  help                     	\tDisplay the current documentation." << std::endl;
+				std::cout << "  start                    	\tStart the chronometer." << std::endl;
+				std::cout << "  stop [label]             	\tStop the running chronometer and save the task. An option is required for the task name." << std::endl;
+				std::cout << "  pause                    	\tPause the running chronometer and buffer it." << std::endl;
+				std::cout << "  cancel                   	\tCancel running and paused chronometers." << std::endl;
+				std::cout << "  history                  	tDisplay a list of the saved tasks." << std::endl;
+				std::cout << "  status                   	\tDisplay the current status of the running and paused chronometers." << std::endl;
+				std::cout << "  put [hours] [label] {date}	\tDirectly add a task into the time table. Two options are required, one for the hours and a second for the label. The last option is optional is the date of the task, by default it's today." << std::endl;
+				std::cout << "  export [file] [from] {to}	\tExport an invoice as PDF with tasks into a time interval. Two options are required, the first for the destination file and the second for the start date of the time interval. The last option is optional and indicate the end date of the time interval, by default it's today.'" << std::endl;
 			}
-			else if(command == "put" && argc == 4)
+			else if(command == "put" && argc >= 4 && argc <= 5)
 			{
 				double hours = std::stod(argv[2]);
 				const char* label = argv[3];
 				
-				core.putTask(hours, label);
+				if(argc == 4)
+				{				
+					core.putTask(hours, label);
+				}
+				else if(argc == 5)
+				{
+					core.putTask(hours, label, utils::time::parse(argv[4]));
+				}
 				
 				std::cout << "💾 The task '" << label << "' with " << std::fixed << std::showpoint << std::setprecision(2) << hours << "h was added to time table." << std::endl;
 			}
